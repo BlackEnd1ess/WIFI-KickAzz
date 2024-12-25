@@ -1,4 +1,28 @@
 # WIFI-KickAzz
+
+UPDATE 26.12.2024:
+Added new Script 801pkt_clone.py! This Script sniff Packets and add them into a selectable List.
+This Script allow to sniff and reinject WIFI type 2 Data Frames which include
+(EAPOL, EAPOL_KEY, Dot11CCMP, Data, Null Data etc..).
+In the next Update i will add a Function, where make minimal Changes in this Packet
+before reinjecting to Victim. Be careful and read the Warning below this Description!! Important!
+
+# WARNING!
+This script was written to test some WIFI Routers/Connected Devices for Security vulnerability or other
+Protocol weakness. If you test this Script, make sure that your Testing Environment is ideally disconnected from the internet!
+Resent packets can, in rare cases, actually lead to unexpected background traffic and actions and in worst case, affect the service itself.
+
+What can happen in this case?
+
+Normally, data packets that have already been processed and are being sent again are discarded. But in some cases the router has a short downtime and it can rarely happen that the manipulated data packet is pushed ahead of the legitimate packet, which means that it is actually accepted and processed. This can be enforced by leaving the router with type 2 frames so that this delay occurs more often.
+Since we are mostly sending legitimate manipulated data packets, this can of course have unpredictable results for all participants in this experiment within the test environment.
+The consequences could be, for example, that the device will continuously and independently try to connect to a service or protocol. It was also observed that incorrect characters and strings were written to the logs, which should normally remain within the data packet. It also happened that some apps on my smartphone needed a full reset to start again and some apps could no longer be started. These packages can cause irreversible damage to the operating system or render the device unusable, so this risk should be noted.
+
+
+
+
+
+
 Testing multible Frame injection via python scapy
 
 if you change tha value in --> return st.join(chr(random.randint(0,285)) for _ in range(random.randint(32,B)))
