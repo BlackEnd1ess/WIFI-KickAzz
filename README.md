@@ -7,7 +7,7 @@ This Script allow to sniff and reinject WIFI type 2 Data Frames which include
 In the next Update i will add a Function, where make minimal Changes in this Packet
 before reinjecting to Victim. Be careful and read the Warning below this Description!! Important!
 
-# WARNING!
+# 801pkt_clone WARNING!
 This script was written to test some WIFI Routers/Connected Devices for Security vulnerability or other
 Protocol weakness. If you test this Script, make sure that your Testing Environment is ideally disconnected from the internet!
 Resent packets can, in rare cases, actually lead to unexpected background traffic and actions and in worst case, affect the service itself.
