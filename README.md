@@ -12,8 +12,7 @@ This script was written to test some WIFI Routers/Connected Devices for Security
 Protocol weakness. If you test this Script, make sure that your Testing Environment is ideally disconnected from the internet!
 Resent packets can, in rare cases, actually lead to unexpected background traffic and actions and in worst case, affect the service itself.
 
-
----------------------------------------------
+#
 What can happen in this case?
 
 Normally, data packets that have already been processed and are being sent again are discarded. But in some cases the router has a short downtime and it can rarely happen that the manipulated data packet is pushed ahead of the legitimate packet, which means that it is actually accepted and processed. This can be enforced by leaving the router with type 2 frames so that this delay occurs more often.
